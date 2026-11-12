@@ -2,7 +2,7 @@
 
 This list contains confirmed limitations that remain after the Stage 16.1 hardening pass.
 
-- Access to the local Shazam database from a signed and sandboxed packaged build has not been validated. The current reader is read-only, and its packaged macOS permissions still need a later platform validation pass.
+- Packaged Shazam import has been validated on the current test setup. Compatibility across different Macs and future macOS or Shazam database versions is not guaranteed. This beta is not sandboxed or notarized.
 - Launch-at-startup is currently a persisted preference only; operating-system registration is not implemented.
 - Import completion and issue notification preferences are persisted, but operating-system notification delivery is not implemented.
 - Artwork URLs are stored and surfaced in read models; there is no local artwork cache/offline image store.
