@@ -1,0 +1,117 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:SongStash.Desktop.ViewModels"
+             x:Class="SongStash.Desktop.Views.ImportResultsView"
+             x:DataType="vm:ImportViewModel">
+  <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="16" Padding="22">
+    <Grid RowDefinitions="Auto,Auto,*,Auto">
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel Spacing="4">
+          <TextBlock Text="{Binding Strings.ResultsTitle}" IsVisible="{Binding IsCompleted}" FontSize="28" FontWeight="Bold" />
+          <TextBlock Text="{Binding Strings.ImportCancelled}" IsVisible="{Binding IsCancelled}" FontSize="28" FontWeight="Bold" />
+          <TextBlock Text="{Binding Strings.ImportRunFailed}" IsVisible="{Binding IsReadError}" FontSize="28" FontWeight="Bold" />
+          <TextBlock Text="{Binding Strings.ResultsSubtitle}" IsVisible="{Binding IsCompleted}" Foreground="{DynamicResource TextSecondaryBrush}" />
+        </StackPanel>
+        <Border Grid.Column="1" Classes="source-chip" VerticalAlignment="Center">
+          <TextBlock Text="{Binding Strings.ShazamSourceTitle}" FontWeight="SemiBold" />
+        </Border>
+      </Grid>
+
+      <Grid Grid.Row="1" ColumnDefinitions="*,*,*,*,*" ColumnSpacing="8" Margin="0,18,0,14" IsVisible="{Binding IsCompleted}">
+        <Border Classes="summary-card" Background="{DynamicResource StatusNewBackgroundBrush}">
+          <StackPanel><TextBlock Text="{Binding Strings.AddedSongs}" Classes="eyebrow" /><TextBlock Text="{Binding Result.AddedSongs}" Classes="summary-number" Foreground="{DynamicResource StatusNewTextBrush}" /></StackPanel>
+        </Border>
+        <Border Grid.Column="1" Classes="summary-card" Background="{DynamicResource StatusLibraryBackgroundBrush}">
+          <StackPanel><TextBlock Text="{Binding Strings.AddedFindEvents}" Classes="eyebrow" /><TextBlock Text="{Binding Result.AddedFindEvents}" Classes="summary-number" Foreground="{DynamicResource StatusLibraryTextBrush}" /></StackPanel>
+        </Border>
+        <Border Grid.Column="2" Classes="summary-card" Background="{DynamicResource SurfaceHoverBrush}">
+          <StackPanel><TextBlock Text="{Binding Strings.SkippedDuplicates}" Classes="eyebrow" /><TextBlock Text="{Binding Result.SkippedDuplicates}" Classes="summary-number" Foreground="{DynamicResource TextSecondaryBrush}" /></StackPanel>
+        </Border>
+        <Border Grid.Column="3" Classes="summary-card" Background="{DynamicResource StatusWarningBackgroundBrush}">
+          <StackPanel><TextBlock Text="{Binding Strings.NeedsAttention}" Classes="eyebrow" /><TextBlock Text="{Binding Result.NeedsAttention}" Classes="summary-number" Foreground="{DynamicResource StatusWarningTextBrush}" /></StackPanel>
+        </Border>
+        <Border Grid.Column="4" Classes="summary-card" Background="{DynamicResource StatusErrorBackgroundBrush}">
+          <StackPanel><TextBlock Text="{Binding Strings.Failed}" Classes="eyebrow" /><TextBlock Text="{Binding Result.Failed}" Classes="summary-number" Foreground="{DynamicResource StatusErrorTextBrush}" /></StackPanel>
+        </Border>
+      </Grid>
+
+      <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="12">
+        <Border Grid.ColumnSpan="2" Classes="notice-neutral" IsVisible="{Binding IsCancelled}" VerticalAlignment="Top">
+          <StackPanel Spacing="6">
+            <TextBlock Text="{Binding Strings.ImportCancelled}" FontSize="19" FontWeight="SemiBold" />
+            <TextBlock Text="{Binding Strings.CancelledDetails}" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" />
+          </StackPanel>
+        </Border>
+        <Border Grid.ColumnSpan="2" Classes="notice-error" IsVisible="{Binding IsReadError}" VerticalAlignment="Top">
+          <TextBlock Text="{Binding Strings.ImportRunFailedDetails}" TextWrapping="Wrap" />
+        </Border>
+
+        <StackPanel Grid.ColumnSpan="2" Spacing="12" IsVisible="{Binding IsCompleted}">
+          <Border Classes="notice-neutral" IsVisible="{Binding IsDuplicateOnly}">
+            <TextBlock Text="{Binding Strings.DuplicateOnlyMessage}" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" />
+          </Border>
+          <Border Classes="notice-neutral" IsVisible="{Binding HasEmptyResult}">
+            <TextBlock Text="{Binding Strings.EmptyResultMessage}" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" />
+          </Border>
+          <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+            <Border Background="{DynamicResource SurfaceHoverBrush}" CornerRadius="10" Padding="12">
+              <Grid RowDefinitions="Auto,*">
+                <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,8">
+                  <TextBlock Text="{Binding Strings.FailedItems}" FontSize="16" FontWeight="SemiBold" />
+                  <TextBlock Grid.Column="1" Text="{Binding Result.Failed}" Foreground="{DynamicResource StatusErrorTextBrush}" FontWeight="Bold" />
+                </Grid>
+                <ListBox Grid.Row="1" ItemsSource="{Binding FailedItems}" IsVisible="{Binding HasFailedItems}" Background="Transparent" BorderThickness="0" Padding="0" MaxHeight="330">
+                  <ListBox.ItemsPanel><ItemsPanelTemplate><VirtualizingStackPanel /></ItemsPanelTemplate></ListBox.ItemsPanel>
+                  <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ImportOutcomeRowViewModel">
+                      <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1" Padding="4,9">
+                        <StackPanel Spacing="3">
+                          <TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                          <TextBlock Text="{Binding Artist}" Foreground="{DynamicResource TextSecondaryBrush}" TextTrimming="CharacterEllipsis" />
+                          <TextBlock Text="{Binding Message}" Foreground="{DynamicResource StatusErrorTextBrush}" TextWrapping="Wrap" FontSize="12" />
+                        </StackPanel>
+                      </Border>
+                    </DataTemplate>
+                  </ListBox.ItemTemplate>
+                </ListBox>
+                <TextBlock Grid.Row="1" Text="{Binding Strings.NoFailedItems}" IsVisible="{Binding HasFailedItems, Converter={x:Static BoolConverters.Not}}" Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+              </Grid>
+            </Border>
+
+            <Border Grid.Column="1" Background="{DynamicResource StatusWarningBackgroundBrush}" CornerRadius="10" Padding="12">
+              <Grid RowDefinitions="Auto,*">
+                <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,8">
+                  <TextBlock Text="{Binding Strings.NeedsAttention}" FontSize="16" FontWeight="SemiBold" />
+                  <TextBlock Grid.Column="1" Text="{Binding Result.NeedsAttention}" Foreground="{DynamicResource StatusWarningTextBrush}" FontWeight="Bold" />
+                </Grid>
+                <ListBox Grid.Row="1" ItemsSource="{Binding NeedsAttentionItems}" IsVisible="{Binding HasNeedsAttentionItems}" Background="Transparent" BorderThickness="0" Padding="0" MaxHeight="330">
+                  <ListBox.ItemsPanel><ItemsPanelTemplate><VirtualizingStackPanel /></ItemsPanelTemplate></ListBox.ItemsPanel>
+                  <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ImportOutcomeRowViewModel">
+                      <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1" Padding="4,9">
+                        <StackPanel Spacing="3">
+                          <TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                          <TextBlock Text="{Binding Artist}" Foreground="{DynamicResource TextSecondaryBrush}" TextTrimming="CharacterEllipsis" />
+                          <TextBlock Text="{Binding Message}" Foreground="{DynamicResource StatusWarningTextBrush}" TextWrapping="Wrap" FontSize="12" />
+                        </StackPanel>
+                      </Border>
+                    </DataTemplate>
+                  </ListBox.ItemTemplate>
+                </ListBox>
+                <TextBlock Grid.Row="1" Text="{Binding Strings.NoAttentionItems}" IsVisible="{Binding HasNeedsAttentionItems, Converter={x:Static BoolConverters.Not}}" Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+              </Grid>
+            </Border>
+          </Grid>
+        </StackPanel>
+      </Grid>
+
+      <Grid Grid.Row="3" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10" Margin="0,14,0,0">
+        <TextBlock Text="{Binding Strings.ResultsFooter}" IsVisible="{Binding IsCompleted}" Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" />
+        <TextBlock Text="{Binding Strings.CancelledFooter}" IsVisible="{Binding IsCancelled}" Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" />
+        <TextBlock Text="{Binding Strings.CancelledFooter}" IsVisible="{Binding IsReadError}" Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" />
+        <Button Grid.Column="1" Content="{Binding Strings.ImportMore}" Command="{Binding BackToSourceCommand}" Classes="secondary-action" />
+        <Button Grid.Column="2" Content="{Binding Strings.BackToLibrary}" Command="{Binding BackToLibraryCommand}" Classes="primary-action" />
+      </Grid>
+    </Grid>
+  </Border>
+</UserControl>

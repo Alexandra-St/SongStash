@@ -1,0 +1,210 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:SongStash.Desktop.ViewModels"
+             xmlns:settings="using:SongStash.Application.Settings"
+             x:Class="SongStash.Desktop.Views.SettingsView"
+             x:DataType="vm:SettingsViewModel">
+  <UserControl.Styles>
+    <Style Selector="TextBox.backup-location-path">
+      <Setter Property="Height" Value="38" />
+      <Setter Property="MinHeight" Value="38" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Padding" Value="12,0" />
+    </Style>
+    <Style Selector="TextBox.backup-location-path /template/ Border#PART_Border">
+      <Setter Property="CornerRadius" Value="9" />
+    </Style>
+  </UserControl.Styles>
+  <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="16" Padding="22">
+    <Grid RowDefinitions="Auto,Auto,*">
+      <StackPanel Spacing="4">
+        <TextBlock Text="{Binding Strings.Title}" FontSize="29" FontWeight="Bold" />
+        <TextBlock Text="{Binding Strings.Subtitle}" Foreground="{DynamicResource TextSecondaryBrush}" />
+      </StackPanel>
+
+      <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Margin="0,18,0,14">
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <Button Content="{Binding Strings.AppearanceTab}" Command="{Binding SelectTabCommand}" CommandParameter="{x:Static vm:SettingsTab.Appearance}" Classes="settings-tab" Classes.selected="{Binding IsAppearanceTab}" />
+          <Button Content="{Binding Strings.GeneralTab}" Command="{Binding SelectTabCommand}" CommandParameter="{x:Static vm:SettingsTab.General}" Classes="settings-tab" Classes.selected="{Binding IsGeneralTab}" />
+          <Button Content="{Binding Strings.MusicServicesTab}" Command="{Binding SelectTabCommand}" CommandParameter="{x:Static vm:SettingsTab.MusicServices}" Classes="settings-tab" Classes.selected="{Binding IsMusicServicesTab}" />
+          <Button Content="{Binding Strings.BackupTab}" Command="{Binding SelectTabCommand}" CommandParameter="{x:Static vm:SettingsTab.Backup}" Classes="settings-tab" Classes.selected="{Binding IsBackupTab}" />
+        </StackPanel>
+      </ScrollViewer>
+
+      <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="14">
+          <StackPanel IsVisible="{Binding IsAppearanceTab}" Spacing="14">
+            <Border Classes="settings-section">
+              <StackPanel Spacing="12">
+                <StackPanel Spacing="3">
+                  <TextBlock Text="{Binding Strings.ThemeTitle}" FontSize="19" FontWeight="Bold" />
+                  <TextBlock Text="{Binding Strings.ThemeDescription}" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" />
+                </StackPanel>
+                <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="10">
+                  <Button x:Name="PeachyThemeCard" IsEnabled="{Binding !FollowSystemTheme}" Classes="settings-choice" Classes.selected="{Binding IsPeachySelected}" Command="{Binding SelectThemeCommand}" CommandParameter="{x:Static settings:SongStashTheme.Peachy}">
+                    <StackPanel Spacing="6"><Border Height="42" Background="{DynamicResource SelectionBrush}" CornerRadius="8"><TextBlock Text="✦  ♡  ♫" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border><TextBlock Text="{Binding Strings.Peachy}" FontWeight="SemiBold" HorizontalAlignment="Center" /><TextBlock Text="{Binding Strings.PeachyDescription}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center" /></StackPanel>
+                  </Button>
+                  <Button x:Name="SageThemeCard" IsEnabled="{Binding !FollowSystemTheme}" Grid.Column="1" Classes="settings-choice" Classes.selected="{Binding IsSageSelected}" Command="{Binding SelectThemeCommand}" CommandParameter="{x:Static settings:SongStashTheme.Sage}">
+                    <StackPanel Spacing="6"><Border Height="42" Background="{DynamicResource SurfaceHoverBrush}" CornerRadius="8"><TextBlock Text="✦  ♡  ♫" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border><TextBlock Text="{Binding Strings.Sage}" FontWeight="SemiBold" HorizontalAlignment="Center" /><TextBlock Text="{Binding Strings.SageDescription}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center" /></StackPanel>
+                  </Button>
+                  <Button x:Name="MidnightThemeCard" IsEnabled="{Binding !FollowSystemTheme}" Grid.Column="2" Classes="settings-choice" Classes.selected="{Binding IsMidnightSelected}" Command="{Binding SelectThemeCommand}" CommandParameter="{x:Static settings:SongStashTheme.Midnight}">
+                    <StackPanel Spacing="6"><Border Height="42" Background="{DynamicResource SurfaceHoverBrush}" CornerRadius="8"><TextBlock Text="✦  ♡  ♫" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border><TextBlock Text="{Binding Strings.Midnight}" FontWeight="SemiBold" HorizontalAlignment="Center" /><TextBlock Text="{Binding Strings.MidnightDescription}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center" /></StackPanel>
+                  </Button>
+                  <Button x:Name="AfterdarkThemeCard" IsEnabled="{Binding !FollowSystemTheme}" Grid.Column="3" Classes="settings-choice" Classes.selected="{Binding IsAfterdarkSelected}" Command="{Binding SelectThemeCommand}" CommandParameter="{x:Static settings:SongStashTheme.Afterdark}">
+                    <StackPanel Spacing="6"><Border Height="42" Background="{DynamicResource SurfaceHoverBrush}" CornerRadius="8"><TextBlock Text="✦  ♡  ♫" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border><TextBlock Text="{Binding Strings.Afterdark}" FontWeight="SemiBold" HorizontalAlignment="Center" /><TextBlock Text="{Binding Strings.AfterdarkDescription}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center" /></StackPanel>
+                  </Button>
+                </Grid>
+              </StackPanel>
+            </Border>
+
+            <Border Classes="settings-section">
+              <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto">
+                <StackPanel Spacing="3">
+                  <TextBlock Text="{Binding Strings.SystemAppearance}" FontSize="19" FontWeight="Bold" />
+                  <TextBlock Text="{Binding Strings.SystemAppearanceDescription}" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" />
+                </StackPanel>
+                <ToggleSwitch x:Name="FollowSystemThemeToggle" Grid.Column="1" IsChecked="{Binding FollowSystemTheme, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" OnContent="{Binding Strings.FollowSystemTheme}" />
+                <StackPanel Grid.Row="1" Margin="0,12,8,0" Spacing="5">
+                  <TextBlock Text="{Binding Strings.LightTheme}" FontWeight="SemiBold" />
+                  <ComboBox ItemsSource="{Binding LightThemeOptions}" SelectedItem="{Binding SelectedLightThemeLabel}" IsEnabled="{Binding FollowSystemTheme}" />
+                </StackPanel>
+                <StackPanel Grid.Row="1" Grid.Column="1" Margin="8,12,0,0" Spacing="5">
+                  <TextBlock Text="{Binding Strings.DarkTheme}" FontWeight="SemiBold" />
+                  <ComboBox ItemsSource="{Binding DarkThemeOptions}" SelectedItem="{Binding SelectedDarkThemeLabel}" IsEnabled="{Binding FollowSystemTheme}" />
+                </StackPanel>
+              </Grid>
+            </Border>
+
+            <Border Classes="settings-section">
+              <StackPanel Spacing="12">
+                <StackPanel Spacing="3"><TextBlock Text="{Binding Strings.PetTitle}" FontSize="19" FontWeight="Bold" /><TextBlock Text="{Binding Strings.PetDescription}" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" /></StackPanel>
+                <Grid ColumnDefinitions="*,*,*,*,*" ColumnSpacing="8">
+                  <Button Classes="settings-choice pet-choice" Classes.selected="{Binding IsPinkCatSelected}" Command="{Binding SelectPetCommand}" CommandParameter="{x:Static settings:SongStashPet.PinkCat}"><StackPanel Spacing="4"><TextBlock Text="🐱" FontSize="28" HorizontalAlignment="Center" /><TextBlock Text="{Binding Strings.PinkCat}" HorizontalAlignment="Center" /></StackPanel></Button>
+                  <Button Grid.Column="1" Classes="settings-choice pet-choice" Classes.selected="{Binding IsSalemSelected}" Command="{Binding SelectPetCommand}" CommandParameter="{x:Static settings:SongStashPet.Salem}"><StackPanel Spacing="4"><TextBlock Text="🐈‍⬛" FontSize="28" HorizontalAlignment="Center" /><TextBlock Text="{Binding Strings.Salem}" HorizontalAlignment="Center" /></StackPanel></Button>
+                  <Button Grid.Column="2" Classes="settings-choice pet-choice" Classes.selected="{Binding IsGhostSelected}" Command="{Binding SelectPetCommand}" CommandParameter="{x:Static settings:SongStashPet.Ghost}"><StackPanel Spacing="4"><TextBlock Text="👻" FontSize="28" HorizontalAlignment="Center" /><TextBlock Text="{Binding Strings.Ghost}" HorizontalAlignment="Center" /></StackPanel></Button>
+                  <Button Grid.Column="3" Classes="settings-choice pet-choice" Classes.selected="{Binding IsBatSelected}" Command="{Binding SelectPetCommand}" CommandParameter="{x:Static settings:SongStashPet.Bat}"><StackPanel Spacing="4"><TextBlock Text="🦇" FontSize="28" HorizontalAlignment="Center" /><TextBlock Text="{Binding Strings.Bat}" HorizontalAlignment="Center" /></StackPanel></Button>
+                  <Button Grid.Column="4" Classes="settings-choice pet-choice" Classes.selected="{Binding IsNoPetSelected}" Command="{Binding SelectPetCommand}" CommandParameter="{x:Static settings:SongStashPet.None}"><StackPanel Spacing="4"><TextBlock Text="⊘" FontSize="28" HorizontalAlignment="Center" /><TextBlock Text="{Binding Strings.None}" HorizontalAlignment="Center" /></StackPanel></Button>
+                </Grid>
+              </StackPanel>
+            </Border>
+
+          </StackPanel>
+
+          <StackPanel IsVisible="{Binding IsGeneralTab}" Spacing="14">
+            <Border Classes="settings-section"><Grid ColumnDefinitions="*,260" RowDefinitions="Auto,Auto"><StackPanel Spacing="4"><TextBlock Text="{Binding Strings.Language}" FontSize="19" FontWeight="Bold" /><TextBlock Text="{Binding Strings.LanguageDescription}" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" /></StackPanel><ComboBox Grid.Column="1" ItemsSource="{Binding LanguageOptions}" SelectedValue="{Binding Language, Mode=TwoWay}" SelectedValueBinding="{Binding Value}" VerticalAlignment="Center"><ComboBox.ItemTemplate><DataTemplate x:DataType="vm:LanguageOption"><TextBlock Text="{Binding Label}" /></DataTemplate></ComboBox.ItemTemplate></ComboBox><TextBlock Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding Strings.MoreLanguages}" Margin="0,10,0,0" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" TextWrapping="Wrap" /></Grid></Border>
+            <Border Classes="settings-section"><StackPanel Spacing="10"><TextBlock Text="{Binding Strings.Startup}" FontSize="19" FontWeight="Bold" /><Grid ColumnDefinitions="*,Auto"><StackPanel Spacing="3"><TextBlock Text="{Binding Strings.LaunchAtStartup}" FontWeight="SemiBold" /><TextBlock Text="{Binding Strings.LaunchAtStartupDescription}" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" /></StackPanel><ToggleSwitch Grid.Column="1" IsChecked="{Binding LaunchAtStartup}" VerticalAlignment="Center" /></Grid></StackPanel></Border>
+            <Border Classes="settings-section"><StackPanel Spacing="10"><TextBlock Text="{Binding Strings.Window}" FontSize="19" FontWeight="Bold" /><Grid ColumnDefinitions="*,Auto"><StackPanel Spacing="3"><TextBlock Text="{Binding Strings.RememberWindow}" FontWeight="SemiBold" /><TextBlock Text="{Binding Strings.RememberWindowDescription}" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" /></StackPanel><ToggleSwitch Grid.Column="1" IsChecked="{Binding RememberWindowSizeAndPosition}" VerticalAlignment="Center" /></Grid></StackPanel></Border>
+            <Border Classes="settings-section"><Grid ColumnDefinitions="*" RowDefinitions="Auto,Auto"><StackPanel Spacing="4"><TextBlock Text="{Binding Strings.StartPage}" FontSize="19" FontWeight="Bold" /><TextBlock Text="{Binding Strings.StartPageDescription}" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" /></StackPanel><StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,10,0,0" Spacing="8"><Button Content="{Binding Strings.Overview}" Command="{Binding SelectStartPageCommand}" CommandParameter="{x:Static settings:StartPage.Overview}" Classes="settings-choice" Classes.selected="{Binding IsOverviewSelected}" /><Button Content="{Binding Strings.AllSongs}" Command="{Binding SelectStartPageCommand}" CommandParameter="{x:Static settings:StartPage.Library}" Classes="settings-choice" Classes.selected="{Binding IsLibrarySelected}" /></StackPanel></Grid></Border>
+            <Border Classes="settings-section"><StackPanel Spacing="10"><TextBlock Text="{Binding Strings.Confirmations}" FontSize="19" FontWeight="Bold" /><Grid ColumnDefinitions="*,Auto"><StackPanel Spacing="3"><TextBlock Text="{Binding Strings.ConfirmDestructive}" FontWeight="SemiBold" /><TextBlock Text="{Binding Strings.ConfirmDestructiveDescription}" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" /></StackPanel><ToggleSwitch Grid.Column="1" IsChecked="{Binding ConfirmDestructiveActions}" VerticalAlignment="Center" /></Grid></StackPanel></Border>
+            <Border Classes="notice-neutral" IsVisible="{Binding HasLoadDiagnostic}"><TextBlock Text="{Binding Strings.SettingsCorrupt}" TextWrapping="Wrap" /></Border>
+            <Border Classes="notice-error" IsVisible="{Binding HasSaveError}"><TextBlock Text="{Binding Strings.SaveFailed}" TextWrapping="Wrap" /></Border>
+            <Border Classes="notice-neutral"><TextBlock Text="{Binding Strings.LocalSettingsNote}" TextWrapping="Wrap" /></Border>
+          </StackPanel>
+
+          <StackPanel IsVisible="{Binding IsMusicServicesTab}" Spacing="14">
+            <Border Classes="settings-section">
+              <Grid ColumnDefinitions="*,280" RowDefinitions="Auto,Auto">
+                <StackPanel Spacing="4"><TextBlock Text="{Binding Strings.MusicServicesTab}" FontSize="20" FontWeight="Bold" /><TextBlock Text="{Binding Strings.MusicServicesDescription}" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" /></StackPanel>
+                <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="0,14,0,0" Spacing="6">
+                  <TextBlock Text="{Binding Strings.PreferredMusicService}" FontWeight="SemiBold" />
+                  <ComboBox x:Name="PreferredMusicServiceComboBox"
+                            ItemsSource="{Binding MusicServiceOptions}"
+                            SelectedValueBinding="{Binding Service}"
+                            SelectedValue="{Binding PreferredMusicService, Mode=TwoWay}">
+                    <ComboBox.ItemTemplate>
+                      <DataTemplate x:DataType="vm:MusicServiceSettingsRowViewModel">
+                        <TextBlock Text="{Binding DisplayName}" />
+                      </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                  </ComboBox>
+                  <TextBlock Text="{Binding MusicServiceFeedback}" IsVisible="{Binding HasMusicServiceFeedback}" Foreground="{DynamicResource AccentBrush}" TextWrapping="Wrap" />
+                </StackPanel>
+              </Grid>
+            </Border>
+            <Border Classes="settings-section">
+              <StackPanel Spacing="10">
+                <TextBlock Text="{Binding Strings.ServiceOrder}" FontSize="17" FontWeight="Bold" />
+                <ItemsControl x:Name="MusicServiceItems" ItemsSource="{Binding MusicServiceRows}">
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:MusicServiceSettingsRowViewModel">
+                      <Grid Height="42" ColumnDefinitions="36,*,Auto" Margin="0,2" ColumnSpacing="10" Opacity="{Binding DragOpacity}">
+                        <Border Grid.ColumnSpan="3" Background="{DynamicResource SelectionBrush}" CornerRadius="7" IsVisible="{Binding IsDragging}" />
+                        <Button Grid.Column="0" Content="⠿" Classes="icon-action music-service-drag-handle" AutomationProperties.Name="Drag to reorder. Option plus Up or Down moves this service." ToolTip.Tip="Drag to reorder (Option+Up/Down also works)" Cursor="Arrow" />
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Spacing="8"><TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" /><Border Classes="source-chip" Padding="7,3" IsVisible="{Binding IsPreferred}"><TextBlock Text="{Binding PreferredLabel}" FontSize="11" Foreground="{DynamicResource AccentBrush}" /></Border></StackPanel>
+                        <ToggleSwitch Grid.Column="2" IsChecked="{Binding IsEnabled, Mode=TwoWay}" OnContent="" OffContent="" VerticalAlignment="Center" />
+                        <Border Grid.ColumnSpan="3" Height="2" Background="{DynamicResource AccentBrush}" VerticalAlignment="Top" IsVisible="{Binding IsDropBefore}" />
+                        <Border Grid.ColumnSpan="3" Height="2" Background="{DynamicResource AccentBrush}" VerticalAlignment="Bottom" IsVisible="{Binding IsDropAfter}" />
+                      </Grid>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </StackPanel>
+            </Border>
+            <Border Classes="notice-error" IsVisible="{Binding HasSaveError}"><TextBlock Text="{Binding Strings.SaveFailed}" TextWrapping="Wrap" /></Border>
+          </StackPanel>
+          <StackPanel IsVisible="{Binding IsBackupTab}" Spacing="14">
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="14">
+              <Border Classes="settings-section">
+                <StackPanel Spacing="12">
+                  <StackPanel Spacing="4"><TextBlock Text="{Binding Strings.ManualBackupTitle}" FontSize="20" FontWeight="Bold" /><TextBlock Text="{Binding Strings.ManualBackupDescription}" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" /></StackPanel>
+                  <Button Content="{Binding Strings.CreateBackup}" Command="{Binding Backup.CreateBackupCommand}" IsEnabled="{Binding Backup.IsBusy, Converter={x:Static BoolConverters.Not}}" Classes="primary-action" HorizontalAlignment="Left" />
+                  <TextBlock Text="{Binding Strings.BackupLocation}" FontWeight="SemiBold" />
+                  <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8" VerticalAlignment="Center"><TextBox Text="{Binding Backup.BackupFolder}" IsReadOnly="True" Classes="backup-location-path" /><Button Grid.Column="1" Content="{Binding Strings.ChooseFolder}" Click="OnChooseBackupFolder" Classes="secondary-action" Height="38" VerticalAlignment="Center" /></Grid>
+                </StackPanel>
+              </Border>
+              <Border Grid.Column="1" Classes="settings-section">
+                <StackPanel Spacing="10">
+                  <TextBlock Text="{Binding Strings.AutomaticBackupTitle}" FontSize="20" FontWeight="Bold" />
+                  <TextBlock Text="{Binding Backup.Strings.AutomaticBackupDescription}" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" />
+                  <Grid ColumnDefinitions="*,220"><TextBlock Text="{Binding Strings.BackupFrequency}" FontWeight="SemiBold" VerticalAlignment="Center" /><ComboBox x:Name="BackupFrequencyComboBox" Grid.Column="1" ItemsSource="{Binding Backup.FrequencyOptions}" SelectedValue="{Binding Backup.AutomaticFrequency, Mode=TwoWay}" SelectedValueBinding="{Binding Value}"><ComboBox.ItemTemplate><DataTemplate x:DataType="vm:BackupFrequencyOption"><TextBlock Text="{Binding Label}" /></DataTemplate></ComboBox.ItemTemplate></ComboBox></Grid>
+                  <Grid ColumnDefinitions="*,Auto"><StackPanel Spacing="2"><TextBlock Text="{Binding Strings.BackupLocation}" FontWeight="SemiBold" /><TextBlock Text="{Binding Backup.BackupFolder}" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" /></StackPanel><Button Grid.Column="1" Content="{Binding Strings.ChooseFolder}" Click="OnChooseBackupFolder" IsEnabled="{Binding Backup.IsAutomaticBackupEnabled}" Classes="secondary-action" /></Grid>
+                </StackPanel>
+              </Border>
+            </Grid>
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="14">
+              <Border Classes="settings-section">
+                <StackPanel Spacing="10">
+                  <StackPanel Spacing="3"><TextBlock Text="{Binding Strings.BackupFilesTitle}" FontSize="20" FontWeight="Bold" /><TextBlock Text="{Binding Strings.BackupFilesDescription}" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" /></StackPanel>
+                  <ItemsControl ItemsSource="{Binding Backup.Backups}">
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate x:DataType="vm:BackupListRowViewModel">
+                        <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1" Padding="0,8">
+                          <Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="6">
+                            <StackPanel Spacing="3"><TextBlock Text="{Binding FileName}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" /><TextBlock Text="{Binding DateLabel}" Foreground="{DynamicResource TextSecondaryBrush}" /><TextBlock Text="{Binding SizeLabel}" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" /></StackPanel>
+                            <Button Grid.Column="1" Content="{Binding RestoreLabel}" Command="{Binding RestoreCommand}" Classes="secondary-action" />
+                            <Button Grid.Column="2" Content="{Binding ShowInFolderLabel}" Command="{Binding ShowInFolderCommand}" Classes="secondary-action" />
+                            <Button Grid.Column="3" Content="{Binding DeleteLabel}" Command="{Binding DeleteCommand}" Classes="destructive-action" />
+                          </Grid>
+                        </Border>
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                  <TextBlock Text="{Binding Strings.NoBackups}" IsVisible="{Binding Backup.HasBackups, Converter={x:Static BoolConverters.Not}}" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" />
+                </StackPanel>
+              </Border>
+              <Border Grid.Column="1" Classes="settings-section">
+                <StackPanel Spacing="10">
+                  <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12"><TextBlock Text="{Binding Strings.BackupTab}" FontSize="20" FontWeight="Bold" TextWrapping="Wrap" VerticalAlignment="Center" /><Button Grid.Column="1" Content="{Binding Strings.ChooseBackupFile}" Click="OnChooseBackupFile" Classes="secondary-action" VerticalAlignment="Center" /></Grid>
+                  <Border Classes="notice-neutral" IsVisible="{Binding Backup.HasPreview}">
+                    <StackPanel Spacing="5"><TextBlock Text="{Binding Backup.PreviewDate}" FontWeight="SemiBold" /><TextBlock Text="{Binding Backup.PreviewCompatibility}" /><TextBlock Text="{Binding Backup.PreviewCounts}" /><TextBlock Text="{Binding Backup.Strings.SettingsIncluded}" IsVisible="{Binding Backup.PreviewContainsSettings}" /></StackPanel>
+                  </Border>
+                  <TextBlock Text="{Binding Strings.MergeBackup}" FontWeight="SemiBold" />
+                  <RadioButton Content="{Binding Strings.MergeBackup}" IsChecked="{Binding Backup.IsMergeSelected}" />
+                  <RadioButton Content="{Binding Strings.ReplaceLibrary}" IsChecked="{Binding Backup.IsReplaceSelected}" />
+                  <CheckBox Content="{Binding Strings.RestoreApplicationSettings}" IsChecked="{Binding Backup.RestoreSettings}" />
+                  <TextBlock Text="{Binding Strings.ReplaceWarning}" IsVisible="{Binding Backup.ReplaceConfirmationPending}" Foreground="{DynamicResource AccentBrush}" TextWrapping="Wrap" />
+                  <Grid ColumnDefinitions="*,*" ColumnSpacing="8" IsVisible="{Binding Backup.ReplaceConfirmationPending}"><Button Content="{Binding Strings.Cancel}" Command="{Binding Backup.CancelReplaceCommand}" Classes="secondary-action" /><Button Grid.Column="1" Content="{Binding Strings.ConfirmReplace}" Command="{Binding Backup.ConfirmReplaceCommand}" Classes="destructive-action" /></Grid>
+                  <Button Content="{Binding Strings.RestoreBackup}" Command="{Binding Backup.RestoreCommand}" IsEnabled="{Binding Backup.HasPreview}" Classes="primary-action" HorizontalAlignment="Right" />
+                </StackPanel>
+              </Border>
+            </Grid>
+            <Border Classes="notice-error" IsVisible="{Binding Backup.HasPendingDelete}"><StackPanel Spacing="8"><TextBlock Text="{Binding Strings.ConfirmDeleteBackup}" /><StackPanel Orientation="Horizontal" Spacing="8"><Button Content="{Binding Strings.Cancel}" Command="{Binding Backup.CancelDeleteCommand}" Classes="secondary-action" /><Button Content="{Binding Strings.ConfirmDelete}" Command="{Binding Backup.ConfirmDeleteCommand}" Classes="destructive-action" /></StackPanel></StackPanel></Border>
+            <Border Classes="notice-error" IsVisible="{Binding Backup.HasError}"><TextBlock Text="{Binding Backup.ErrorMessage}" TextWrapping="Wrap" /></Border>
+            <Border Classes="notice-neutral" IsVisible="{Binding Backup.HasMessage}"><TextBlock Text="{Binding Backup.Message}" TextWrapping="Wrap" /></Border>
+            <Border Classes="notice-error" IsVisible="{Binding HasSaveError}"><TextBlock Text="{Binding Strings.SaveFailed}" TextWrapping="Wrap" /></Border>
+          </StackPanel>
+        </StackPanel>
+      </ScrollViewer>
+    </Grid>
+  </Border>
+</UserControl>

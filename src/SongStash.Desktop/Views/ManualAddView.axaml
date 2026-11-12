@@ -1,0 +1,92 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:SongStash.Desktop.ViewModels"
+             x:Class="SongStash.Desktop.Views.ManualAddView"
+             x:DataType="vm:ManualAddViewModel">
+  <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="16" Padding="24">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+      <StackPanel Spacing="20" MaxWidth="780" HorizontalAlignment="Stretch">
+        <TextBlock Text="{Binding Strings.Title}" FontSize="27" FontWeight="Bold" />
+        <Border Background="{DynamicResource SurfaceSecondaryBrush}" CornerRadius="20" Padding="24">
+          <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnSpacing="20" RowSpacing="16">
+            <StackPanel Spacing="7">
+              <TextBlock Text="{Binding Strings.TitleField}" Classes="form-label" />
+              <TextBox Text="{Binding Title, Mode=TwoWay}" Classes="songstash-field" />
+              <TextBlock Text="{Binding TitleError}" IsVisible="{Binding HasTitleError}" Foreground="{DynamicResource StatusErrorTextBrush}" FontSize="12" />
+            </StackPanel>
+            <StackPanel Grid.Column="1" Spacing="7">
+              <TextBlock Text="{Binding Strings.Artist}" Classes="form-label" />
+              <TextBox Text="{Binding Artist, Mode=TwoWay}" Classes="songstash-field" />
+              <TextBlock Text="{Binding ArtistError}" IsVisible="{Binding HasArtistError}" Foreground="{DynamicResource StatusErrorTextBrush}" FontSize="12" />
+            </StackPanel>
+            <StackPanel Grid.Row="1" Spacing="7">
+              <TextBlock Text="{Binding Strings.Album}" Classes="form-label" />
+              <TextBox Text="{Binding Album, Mode=TwoWay}" Classes="songstash-field" />
+            </StackPanel>
+            <StackPanel Grid.Row="1" Grid.Column="1" Spacing="7">
+              <TextBlock Text="{Binding Strings.Genre}" Classes="form-label" />
+              <TextBox Text="{Binding Genre, Mode=TwoWay}" Classes="songstash-field" />
+            </StackPanel>
+            <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Spacing="7">
+              <TextBlock Text="{Binding Strings.Notes}" Classes="form-label" />
+              <TextBox Text="{Binding Notes, Mode=TwoWay}" AcceptsReturn="True" MinHeight="112" VerticalContentAlignment="Top" TextWrapping="Wrap" Classes="songstash-field" />
+            </StackPanel>
+            <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Spacing="7">
+              <TextBlock Text="{Binding Strings.ArtworkUrl}" Classes="form-label" />
+              <TextBox Text="{Binding ArtworkUrlText, Mode=TwoWay}" Classes="songstash-field" />
+              <TextBlock Text="{Binding ArtworkUrlError}" IsVisible="{Binding HasArtworkUrlError}" Foreground="{DynamicResource StatusErrorTextBrush}" FontSize="12" />
+            </StackPanel>
+            <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Spacing="8">
+              <TextBlock Text="{Binding Strings.DateFound}" Classes="form-label" />
+              <Grid ColumnDefinitions="100,170,120,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="6">
+                <TextBlock Text="{Binding Strings.Day}" Classes="form-label" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" />
+                <TextBlock Grid.Column="1" Text="{Binding Strings.Month}" Classes="form-label" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" />
+                <TextBlock Grid.Column="2" Text="{Binding Strings.Year}" Classes="form-label" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" />
+                <ComboBox Grid.Row="1" HorizontalAlignment="Stretch" ItemsSource="{Binding DayOptions}" SelectedItem="{Binding SelectedDay, Mode=TwoWay}" />
+                <ComboBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" ItemsSource="{Binding MonthOptions}" SelectedValueBinding="{Binding Month}" SelectedValue="{Binding SelectedMonth, Mode=TwoWay}">
+                  <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ManualMonthOption"><TextBlock Text="{Binding Label}" /></DataTemplate>
+                  </ComboBox.ItemTemplate>
+                </ComboBox>
+                <ComboBox Grid.Row="1" Grid.Column="2" HorizontalAlignment="Stretch" ItemsSource="{Binding YearOptions}" SelectedItem="{Binding SelectedYear, Mode=TwoWay}" />
+                <Button Grid.Row="1" Grid.Column="3" Content="{Binding Strings.UseToday}" Command="{Binding UseTodayCommand}" Classes="secondary-action" VerticalAlignment="Center" />
+              </Grid>
+              <TextBlock Text="{Binding DateError}" IsVisible="{Binding HasDateError}" Foreground="{DynamicResource StatusErrorTextBrush}" FontSize="12" />
+              <StackPanel Spacing="5" Margin="0,4,0,0">
+                <TextBlock Text="{Binding Strings.Time}" Classes="form-label" Foreground="{DynamicResource TextSecondaryBrush}" />
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="8">
+                  <ComboBox ItemsSource="{Binding HourOptions}" SelectedItem="{Binding SelectedHour, Mode=TwoWay}" Classes="songstash-field time-field" />
+                  <TextBlock Text=":" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="18" VerticalAlignment="Center" />
+                  <ComboBox ItemsSource="{Binding MinuteOptions}" SelectedItem="{Binding SelectedMinute, Mode=TwoWay}" Classes="songstash-field time-field" />
+                </StackPanel>
+              </StackPanel>
+            </StackPanel>
+          </Grid>
+        </Border>
+        <TextBlock Text="{Binding Message}" IsVisible="{Binding HasMessage}" Foreground="{DynamicResource StatusWarningTextBrush}" TextWrapping="Wrap" />
+        <Border IsVisible="{Binding HasMatches}" Background="{DynamicResource SurfaceHoverBrush}" CornerRadius="12" Padding="12">
+          <StackPanel Spacing="9">
+            <TextBlock Text="{Binding Strings.MatchTitle}" Classes="form-label" />
+            <ItemsControl ItemsSource="{Binding Matches}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:ManualSongMatchOptionViewModel">
+                  <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1" Padding="0,6">
+                    <Grid ColumnDefinitions="*,Auto">
+                      <StackPanel><TextBlock Text="{Binding Title}" FontWeight="SemiBold" /><TextBlock Text="{Binding Artist}" Foreground="{DynamicResource TextSecondaryBrush}" /></StackPanel>
+                      <Button Grid.Column="1" Content="{Binding AttachLabel}" Command="{Binding AttachCommand}" Classes="secondary-action" />
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </Border>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+          <Button Content="{Binding Strings.Cancel}" Command="{Binding CancelCommand}" Classes="secondary-action" />
+          <Button Content="{Binding Strings.KeepSeparate}" Command="{Binding KeepSeparateCommand}" IsVisible="{Binding RequiresChoice}" Classes="primary-action" />
+          <Button Content="{Binding Strings.Save}" Command="{Binding SaveCommand}" IsVisible="{Binding RequiresChoice, Converter={x:Static BoolConverters.Not}}" Classes="primary-action" IsEnabled="{Binding IsSaving, Converter={x:Static BoolConverters.Not}}" />
+        </StackPanel>
+      </StackPanel>
+    </ScrollViewer>
+  </Border>
+</UserControl>

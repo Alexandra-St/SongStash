@@ -1,0 +1,95 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:SongStash.Desktop.ViewModels"
+             xmlns:app="using:SongStash.Application.Importing"
+             x:Class="SongStash.Desktop.Views.ImportPreviewView"
+             x:DataType="vm:ImportViewModel">
+  <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="16" Padding="20">
+    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto">
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel Spacing="4">
+          <TextBlock Text="{Binding Strings.PreviewTitle}" FontSize="27" FontWeight="Bold" />
+          <TextBlock Text="{Binding Strings.PreviewSubtitle}" Foreground="{DynamicResource TextSecondaryBrush}" />
+        </StackPanel>
+        <Border Grid.Column="1" Classes="source-chip" VerticalAlignment="Center">
+          <StackPanel Spacing="2">
+            <TextBlock Text="{Binding Strings.ShazamSourceTitle}" FontWeight="SemiBold" />
+            <TextBlock Text="{Binding CandidateCountLabel}" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" />
+          </StackPanel>
+        </Border>
+      </Grid>
+
+      <Grid Grid.Row="1" ColumnDefinitions="*,*,*,*,*" ColumnSpacing="8" Margin="0,16,0,14">
+        <Border Classes="summary-card">
+          <StackPanel><TextBlock Text="{Binding Strings.Total}" Classes="eyebrow" /><TextBlock Text="{Binding Summary.TotalCandidates}" Classes="summary-number" /></StackPanel>
+        </Border>
+        <Border Grid.Column="1" Classes="summary-card">
+          <StackPanel><TextBlock Text="{Binding Strings.NewSongs}" Classes="eyebrow" /><TextBlock Text="{Binding Summary.NewSongs}" Classes="summary-number" Foreground="{DynamicResource StatusNewTextBrush}" /></StackPanel>
+        </Border>
+        <Border Grid.Column="2" Classes="summary-card">
+          <StackPanel><TextBlock Text="{Binding Strings.ExistingSongs}" Classes="eyebrow" /><TextBlock Text="{Binding Summary.AlreadyInLibrary}" Classes="summary-number" Foreground="{DynamicResource StatusLibraryTextBrush}" /></StackPanel>
+        </Border>
+        <Border Grid.Column="3" Classes="summary-card">
+          <StackPanel><TextBlock Text="{Binding Strings.IncompleteItems}" Classes="eyebrow" /><TextBlock Text="{Binding Summary.Incomplete}" Classes="summary-number" Foreground="{DynamicResource StatusWarningTextBrush}" /></StackPanel>
+        </Border>
+        <Border Grid.Column="4" Classes="summary-card">
+          <StackPanel><TextBlock Text="{Binding Strings.ReviewItems}" Classes="eyebrow" /><TextBlock Text="{Binding Summary.NeedsReview}" Classes="summary-number" Foreground="{DynamicResource StatusReviewTextBrush}" /></StackPanel>
+        </Border>
+      </Grid>
+
+      <Grid Grid.Row="2" ColumnDefinitions="42,1.15*,1*,0.85*,135,145" Margin="6,6,10,8">
+        <TextBlock Grid.Column="0" Text="" />
+        <TextBlock Grid.Column="1" Text="{Binding Strings.TitleColumn}" Classes="eyebrow" />
+        <TextBlock Grid.Column="2" Text="{Binding Strings.ArtistColumn}" Classes="eyebrow" />
+        <TextBlock Grid.Column="3" Text="{Binding Strings.AlbumColumn}" Classes="eyebrow" />
+        <TextBlock Grid.Column="4" Text="{Binding Strings.FoundAtColumn}" Classes="eyebrow" />
+        <TextBlock Grid.Column="5" Text="{Binding Strings.StatusColumn}" Classes="eyebrow" />
+      </Grid>
+
+      <ListBox Grid.Row="3" ItemsSource="{Binding PreviewItems}" Background="Transparent" BorderThickness="0" Padding="0">
+        <ListBox.ItemsPanel>
+          <ItemsPanelTemplate><VirtualizingStackPanel /></ItemsPanelTemplate>
+        </ListBox.ItemsPanel>
+        <ListBox.ItemTemplate>
+          <DataTemplate x:DataType="vm:ImportPreviewRowViewModel">
+            <Border Classes="preview-row" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1" Padding="6,10">
+              <Grid ColumnDefinitions="42,1.15*,1*,0.85*,135,145" ColumnSpacing="8" MinHeight="44">
+                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" IsEnabled="{Binding CanSelect}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                <Grid Grid.Column="1" ColumnDefinitions="*,22" VerticalAlignment="Center">
+                  <TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                  <TextBlock Grid.Column="1" Text="⚠" IsVisible="{Binding HasWarning}" Foreground="{DynamicResource StatusWarningTextBrush}" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip.Tip="{Binding DiagnosticMessage}" />
+                  <TextBlock Grid.Column="1" Text="!" IsVisible="{Binding HasError}" Foreground="{DynamicResource StatusErrorTextBrush}" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip.Tip="{Binding DiagnosticMessage}" />
+                </Grid>
+                <TextBlock Grid.Column="2" Text="{Binding Artist}" Foreground="{DynamicResource TextSecondaryBrush}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="3" Text="{Binding Album}" Foreground="{DynamicResource TextSecondaryBrush}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="4" Text="{Binding FoundAtText}" Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" />
+                <Border Grid.Column="5" Classes="status-pill" Classes.new="{Binding IsNew}" Classes.already="{Binding IsAlreadyInLibrary}" Classes.incomplete="{Binding IsIncomplete}" Classes.review="{Binding IsNeedsReview}" VerticalAlignment="Center">
+                  <TextBlock Text="{Binding StatusLabel}" Classes="status-text" Classes.new="{Binding IsNew}" Classes.already="{Binding IsAlreadyInLibrary}" Classes.incomplete="{Binding IsIncomplete}" Classes.review="{Binding IsNeedsReview}" TextWrapping="NoWrap" />
+                </Border>
+              </Grid>
+            </Border>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+
+      <Grid Grid.Row="4" ColumnDefinitions="*,Auto" Margin="0,14,0,0">
+        <StackPanel Spacing="4" VerticalAlignment="Center">
+          <TextBlock Text="{Binding SelectedCountLabel}" FontWeight="SemiBold" />
+          <TextBlock Text="{Binding Strings.SelectionHelp}" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" TextWrapping="Wrap" />
+          <Border Classes="notice-success" IsVisible="{Binding IsCompleted}">
+            <StackPanel Spacing="2">
+              <TextBlock Text="{Binding Strings.ImportComplete}" FontWeight="SemiBold" />
+              <TextBlock Text="{Binding NewSongsCountLabel}" />
+              <TextBlock Text="{Binding FindEventsCountLabel}" />
+              <TextBlock Text="{Binding FailedCountLabel}" IsVisible="{Binding HasFailures}" />
+            </StackPanel>
+          </Border>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+          <Button Content="{Binding Strings.Back}" Command="{Binding BackToSourceCommand}" Classes="secondary-action" />
+          <Button Content="{Binding Strings.ImportSelected}" Command="{Binding ImportSelectedCommand}" Classes="primary-action" />
+        </StackPanel>
+      </Grid>
+    </Grid>
+  </Border>
+</UserControl>

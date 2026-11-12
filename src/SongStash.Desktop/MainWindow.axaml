@@ -1,0 +1,245 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:SongStash.Desktop.ViewModels"
+        xmlns:views="using:SongStash.Desktop.Views"
+        x:Class="SongStash.Desktop.MainWindow"
+        x:DataType="vm:ShellViewModel"
+        Title="SongStash"
+        Width="1360"
+        Height="850"
+        MinWidth="1024"
+        MinHeight="680"
+        Background="{DynamicResource WindowBackgroundBrush}">
+  <Window.Styles>
+    <Style Selector="ComboBox#LibrarySortSelector /template/ Popup#PART_Popup">
+      <Setter Property="Placement" Value="Bottom" />
+      <Setter Property="PlacementConstraintAdjustment" Value="FlipY, SlideX, ResizeY" />
+      <Setter Property="HorizontalAlignment" Value="Right" />
+      <Setter Property="ShouldUseOverlayLayer" Value="True" />
+    </Style>
+  </Window.Styles>
+  <Grid ColumnDefinitions="260,*" Margin="12">
+    <Border Grid.Column="0" Width="250" HorizontalAlignment="Left" Background="{DynamicResource SidebarBrush}" CornerRadius="16" Padding="0" Margin="0,0,10,0" ClipToBounds="True">
+      <Grid>
+        <Grid x:Name="SidebarPetArtwork" IsVisible="False" IsHitTestVisible="False" ClipToBounds="True">
+          <Image x:Name="PetDownBackground" Width="250" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" IsVisible="False" IsHitTestVisible="False" />
+          <Image x:Name="SalemDownLeftBackground" Width="250" Stretch="Uniform" HorizontalAlignment="Left" VerticalAlignment="Bottom" IsVisible="False" IsHitTestVisible="False" />
+          <Image x:Name="SalemDownRightBackground" Width="250" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Bottom" IsVisible="False" IsHitTestVisible="False" />
+          <Image x:Name="SalemTopBackground" Width="250" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" IsVisible="False" IsHitTestVisible="False" />
+          <Image x:Name="GhostDownBackground" Width="250" Stretch="Uniform" HorizontalAlignment="Left" VerticalAlignment="Bottom" IsVisible="False" IsHitTestVisible="False" />
+          <Image x:Name="GhostTopBackground" Width="250" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" IsVisible="False" IsHitTestVisible="False" />
+          <Image x:Name="BatDownBackground" Width="250" Stretch="Uniform" HorizontalAlignment="Left" VerticalAlignment="Bottom" IsVisible="False" IsHitTestVisible="False" />
+          <Image x:Name="BatTopBackground" Width="250" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" IsVisible="False" IsHitTestVisible="False" />
+          <Image x:Name="PetTopBackground" Width="250" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" IsVisible="False" IsHitTestVisible="False" />
+          <Grid x:Name="PetTriptychArtwork">
+            <Image x:Name="PetTriptychTop" Width="250" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Top" />
+            <Image x:Name="PetTriptychMiddle" Width="250" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Center" />
+            <Image x:Name="PetTriptychBottom" Width="250" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" />
+          </Grid>
+        </Grid>
+        <Grid x:Name="SidebarComposition" RowDefinitions="Auto,*,Auto" Margin="14">
+        <StackPanel Orientation="Horizontal" Spacing="9" Margin="4,8,0,24">
+          <TextBlock Text="✦" Foreground="{DynamicResource AccentBrush}" FontSize="24" VerticalAlignment="Center" />
+          <TextBlock Text="SongStash" FontSize="20" FontWeight="Bold" VerticalAlignment="Center" />
+        </StackPanel>
+        <StackPanel Grid.Row="1" Spacing="8">
+          <Button Classes="nav-item" Classes.active="{Binding IsLibraryPage}" Command="{Binding ShowLibraryCommand}"><StackPanel Orientation="Horizontal" Spacing="8"><TextBlock Text="♫" Width="18" TextAlignment="Center" /><TextBlock Text="{Binding LibraryNavigationLabel}" /></StackPanel></Button>
+          <Button Classes="nav-item" Classes.active="{Binding IsOverviewPage}" Command="{Binding ShowOverviewCommand}"><StackPanel Orientation="Horizontal" Spacing="8"><TextBlock Text="⌂" Width="18" TextAlignment="Center" /><TextBlock Text="{Binding OverviewNavigationLabel}" /></StackPanel></Button>
+          <Button Classes="nav-item" Classes.active="{Binding IsImportPage}" Command="{Binding OpenImportCommand}"><StackPanel Orientation="Horizontal" Spacing="8"><TextBlock Text="⇩" Width="18" TextAlignment="Center" /><TextBlock Text="{Binding ImportNavigationLabel}" /></StackPanel></Button>
+          <Button Classes="nav-item" Classes.active="{Binding IsSettingsPage}" Command="{Binding OpenSettingsCommand}"><StackPanel Orientation="Horizontal" Spacing="8"><TextBlock Text="⚙" Width="18" TextAlignment="Center" /><TextBlock Text="{Binding Settings.Strings.NavigationSettings}" /></StackPanel></Button>
+        </StackPanel>
+        <Grid x:Name="PetPlacement" Grid.Row="2" IsVisible="False">
+          <Image x:Name="PetBasePreview" Width="200" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,4" />
+        </Grid>
+        </Grid>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Column="1">
+      <Grid IsVisible="{Binding IsOverviewPage}">
+        <views:OverviewView DataContext="{Binding Overview}" />
+      </Grid>
+      <Grid IsVisible="{Binding IsLibraryPage}">
+        <Grid DataContext="{Binding Library}" ColumnDefinitions="*,330" RowDefinitions="Auto,*" ColumnSpacing="10" RowSpacing="10">
+          <Grid x:Name="LibraryHeader" Grid.Row="0" Grid.ColumnSpan="2" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8" IsVisible="{Binding IsManualAddOpen, Converter={x:Static BoolConverters.Not}}">
+                <StackPanel Spacing="3" HorizontalAlignment="Left" VerticalAlignment="Center">
+                  <TextBlock Text="{Binding Strings.Title}" FontSize="27" FontWeight="Bold" />
+                  <TextBlock Text="{Binding SongCountLabel}" Foreground="{DynamicResource TextSecondaryBrush}" />
+                  <TextBlock Text="{Binding Export.Message}" IsVisible="{Binding Export.HasMessage}" Foreground="{DynamicResource StatusNewTextBrush}" FontSize="12" />
+                  <TextBlock Text="{Binding Export.ErrorMessage}" IsVisible="{Binding Export.HasError}" Foreground="{DynamicResource StatusErrorTextBrush}" FontSize="12" />
+                </StackPanel>
+                <Grid Grid.Column="2" ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="8" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                  <Button x:Name="LibraryAddButton" Content="{Binding Strings.AddManually}" Command="{Binding OpenManualAddCommand}" IsEnabled="{Binding CanAddManually}" Classes="secondary-action" Height="40" VerticalContentAlignment="Center" />
+                  <TextBox Grid.Column="1" MinWidth="140" Width="200" Height="40" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" PlaceholderText="{Binding Strings.SearchPlaceholder}" Text="{Binding SearchText, Mode=TwoWay}" />
+                  <ComboBox x:Name="LibrarySortSelector" Grid.Column="2" Width="152" Height="40" VerticalAlignment="Center"
+                            ItemsSource="{Binding SortOptions}" SelectedItem="{Binding SelectedSortOption, Mode=TwoWay}">
+                    <ComboBox.ItemTemplate>
+                      <DataTemplate x:DataType="vm:LibrarySortOption"><TextBlock Text="{Binding Label}" /></DataTemplate>
+                    </ComboBox.ItemTemplate>
+                  </ComboBox>
+                  <Button Grid.Column="3" Content="{Binding Strings.Export}" IsEnabled="{Binding CanExport}" Classes="secondary-action" Height="40" VerticalContentAlignment="Center">
+                    <Button.Flyout>
+                      <Flyout>
+                        <StackPanel Spacing="4" MinWidth="140">
+                          <Button Content="{Binding Strings.ExportCsv}" Click="ExportCsv_Click" HorizontalAlignment="Stretch" Classes="secondary-action" />
+                          <Button Content="{Binding Strings.ExportJson}" Click="ExportJson_Click" HorizontalAlignment="Stretch" Classes="secondary-action" />
+                        </StackPanel>
+                      </Flyout>
+                    </Button.Flyout>
+                  </Button>
+                </Grid>
+          </Grid>
+          <Border Grid.Row="1" Grid.Column="0" IsVisible="{Binding IsManualAddOpen, Converter={x:Static BoolConverters.Not}}" Background="{DynamicResource SurfaceBrush}" CornerRadius="16" Padding="20">
+            <Grid RowDefinitions="Auto,*">
+              <Grid Grid.Row="0" ColumnDefinitions="48,*,*,Auto,26" ColumnSpacing="10" Margin="10,2,10,8" HorizontalAlignment="Stretch">
+                <TextBlock Text="{Binding Strings.ArtColumn}" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+                <TextBlock Grid.Column="1" Text="{Binding Strings.TitleColumn}" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+                <TextBlock Grid.Column="2" Text="{Binding Strings.ArtistColumn}" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+                <TextBlock Grid.Column="3" Text="{Binding Strings.FindsColumn}" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+                <TextBlock Grid.Column="4" Text="♥" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" HorizontalAlignment="Center" />
+              </Grid>
+              <Grid Grid.Row="1" HorizontalAlignment="Stretch">
+                <ScrollViewer IsVisible="{Binding HasSongs}">
+                  <ItemsControl ItemsSource="{Binding FilteredSongs}" HorizontalAlignment="Stretch">
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate x:DataType="vm:LibrarySongRowViewModel">
+                        <Button Classes="library-row" Classes.selected="{Binding IsSelected}" Command="{Binding SelectCommand}" Margin="0,1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                          <Grid ColumnDefinitions="48,*,*,Auto,26" ColumnSpacing="10" HorizontalAlignment="Stretch">
+                            <Border Width="42" Height="42" CornerRadius="9" Background="{DynamicResource PlaceholderBrush}">
+                              <TextBlock Text="♫" Foreground="{DynamicResource AccentBrush}" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                              <TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                              <TextBlock Text="{Binding FindCountText}" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" />
+                            </StackPanel>
+                            <TextBlock Grid.Column="2" Text="{Binding Artist}" Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                            <TextBlock Grid.Column="3" Text="{Binding FindCount}" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center" Margin="8,0,2,0" />
+                            <TextBlock Grid.Column="4" Text="♥" IsVisible="{Binding IsFavorite}" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                          </Grid>
+                        </Button>
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                </ScrollViewer>
+                <StackPanel IsVisible="{Binding HasNoSongs}" HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="360" Spacing="12">
+                  <TextBlock Text="{Binding Strings.EmptyTitle}" FontSize="23" FontWeight="Bold" HorizontalAlignment="Center" />
+                  <TextBlock Text="{Binding Strings.EmptyDescription}" Foreground="{DynamicResource TextSecondaryBrush}" TextAlignment="Center" TextWrapping="Wrap" />
+                  <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="8">
+                    <Button Content="{Binding Strings.Import}" Click="EmptyImport_Click" Classes="primary-action" />
+                    <Button Content="{Binding Strings.AddManually}" Command="{Binding OpenManualAddCommand}" IsEnabled="{Binding CanAddManually}" Classes="secondary-action" />
+                  </StackPanel>
+                </StackPanel>
+                <TextBlock IsVisible="{Binding HasNoResults}" Text="{Binding Strings.NoSearchResults}" Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <TextBlock IsVisible="{Binding HasError}" Text="{Binding ErrorMessage}" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="8" />
+              </Grid>
+            </Grid>
+          </Border>
+
+          <Border Grid.Row="1" Grid.Column="1" IsVisible="{Binding IsManualAddOpen, Converter={x:Static BoolConverters.Not}}" Background="{DynamicResource SurfaceBrush}" CornerRadius="16" Padding="0">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+              <Grid Margin="20,20,32,20">
+                <StackPanel IsVisible="{Binding Details.HasSelection}" Spacing="14">
+                  <Border Height="188" CornerRadius="14" Background="{DynamicResource PlaceholderBrush}">
+                    <TextBlock Text="♫" FontSize="64" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                  </Border>
+                  <StackPanel Spacing="4">
+                    <TextBlock Text="{Binding Details.Title}" FontSize="23" FontWeight="Bold" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding Details.Artist}" FontSize="16" Foreground="{DynamicResource TextSecondaryBrush}" />
+                    <TextBlock Text="{Binding Details.Album}" Foreground="{DynamicResource TextSecondaryBrush}" />
+                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,0">
+                      <Button Content="{Binding Details.FavoriteActionLabel}" Command="{Binding ToggleFavoriteCommand}" Classes="secondary-action" />
+                      <Button Content="{Binding Strings.DetailsDeleteSong}" Command="{Binding RequestDeleteSongCommand}" Classes="destructive-action" />
+                    </StackPanel>
+                  </StackPanel>
+                  <Border IsVisible="{Binding HasPendingDelete}" Classes="notice-error" Padding="10">
+                    <StackPanel Spacing="8"><TextBlock Text="{Binding PendingDeleteMessage}" TextWrapping="Wrap" /><StackPanel Orientation="Horizontal" Spacing="8"><Button Content="{Binding Strings.Delete}" Command="{Binding ConfirmDeleteCommand}" Classes="destructive-action" /><Button Content="{Binding Strings.Cancel}" Command="{Binding CancelDeleteCommand}" Classes="secondary-action" /></StackPanel></StackPanel>
+                  </Border>
+                  <StackPanel Spacing="8">
+                    <Button Content="{Binding PreferredServiceButtonText}" Command="{Binding OpenPreferredMusicServiceCommand}" Classes="primary-action" HorizontalAlignment="Stretch" />
+                    <Button Content="{Binding MoreMusicServicesLabel}" Classes="secondary-action" HorizontalAlignment="Left">
+                      <Button.Flyout>
+                        <Flyout>
+                          <ItemsControl ItemsSource="{Binding OtherMusicServiceActions}">
+                            <ItemsControl.ItemTemplate>
+                              <DataTemplate x:DataType="vm:MusicServiceActionViewModel">
+                                <Button Content="{Binding Label}" Command="{Binding OpenCommand}" HorizontalAlignment="Stretch" Classes="secondary-action" />
+                              </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                          </ItemsControl>
+                        </Flyout>
+                      </Button.Flyout>
+                    </Button>
+                    <TextBlock Text="{Binding OpenServiceError}" IsVisible="{Binding HasOpenServiceError}" Foreground="{DynamicResource AccentBrush}" TextWrapping="Wrap" FontSize="12" />
+                  </StackPanel>
+                  <Border Height="1" Background="{DynamicResource BorderBrush}" />
+                    <StackPanel Spacing="6">
+                    <TextBlock Text="{Binding Strings.DetailsHeading}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" FontWeight="Bold" />
+                    <TextBlock Text="{Binding Details.GenreText}" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding Details.Notes}" TextWrapping="Wrap" Foreground="{DynamicResource TextSecondaryBrush}" />
+                    <TextBlock Text="{Binding Strings.Favorite}" IsVisible="{Binding Details.IsFavorite}" Foreground="{DynamicResource AccentBrush}" />
+                  </StackPanel>
+                  <Border Height="1" Background="{DynamicResource BorderBrush}" />
+                  <StackPanel Spacing="7">
+                    <TextBlock Text="{Binding Strings.LinkedReferences}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" FontWeight="Bold" />
+                    <ItemsControl ItemsSource="{Binding Details.ExternalReferences}">
+                      <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:ExternalReferenceViewModel">
+                          <StackPanel Margin="0,3" Spacing="2">
+                            <TextBlock Text="{Binding Provider}" FontWeight="SemiBold" />
+                            <TextBlock Text="{Binding ExternalId}" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" />
+                            <TextBlock Text="{Binding Url}" Foreground="{DynamicResource AccentBrush}" TextWrapping="Wrap" />
+                          </StackPanel>
+                        </DataTemplate>
+                      </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock Text="{Binding Strings.NoLinkedReferences}" IsVisible="{Binding Details.HasExternalReferences, Converter={x:Static BoolConverters.Not}}" Foreground="{DynamicResource TextSecondaryBrush}" />
+                  </StackPanel>
+                  <Border Height="1" Background="{DynamicResource BorderBrush}" />
+                  <StackPanel Spacing="8">
+                    <TextBlock Text="{Binding Strings.FindHistory}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" FontWeight="Bold" />
+                    <TextBlock Text="{Binding Details.FindCountLabel}" Foreground="{DynamicResource AccentBrush}" />
+                    <ItemsControl ItemsSource="{Binding Details.FindEvents}">
+                      <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:FindEventViewModel">
+                          <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1" Padding="0,8">
+                            <StackPanel Spacing="3">
+                              <TextBlock Text="{Binding FoundAt}" FontWeight="SemiBold" />
+                              <TextBlock Text="{Binding Source}" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" />
+                              <TextBlock Text="{Binding ImportedAt}" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+                              <Button Content="{Binding DeleteLabel}" Command="{Binding DeleteCommand}" Classes="destructive-action" HorizontalAlignment="Left" />
+                            </StackPanel>
+                          </Border>
+                        </DataTemplate>
+                      </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                  </StackPanel>
+                </StackPanel>
+                <StackPanel IsVisible="{Binding Details.HasNoSelection}" VerticalAlignment="Center" Spacing="8">
+                  <TextBlock Text="{Binding Strings.ChooseSong}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" />
+                  <TextBlock Text="{Binding Strings.DetailsEmptyDescription}" Foreground="{DynamicResource TextSecondaryBrush}" TextAlignment="Center" TextWrapping="Wrap" />
+                </StackPanel>
+              </Grid>
+            </ScrollViewer>
+          </Border>
+          <Grid Grid.RowSpan="2" Grid.ColumnSpan="2" IsVisible="{Binding IsManualAddOpen}"><views:ManualAddView DataContext="{Binding ManualAdd}" /></Grid>
+        </Grid>
+      </Grid>
+
+      <Grid IsVisible="{Binding IsImportSourcePage}">
+        <views:ImportSourceView DataContext="{Binding Import}" />
+      </Grid>
+      <Grid IsVisible="{Binding IsImportPreviewPage}">
+        <views:ImportPreviewView DataContext="{Binding Import}" />
+      </Grid>
+      <Grid IsVisible="{Binding IsImportingPage}">
+        <views:ImportingView DataContext="{Binding Import}" />
+      </Grid>
+      <Grid IsVisible="{Binding IsImportResultsPage}">
+        <views:ImportResultsView DataContext="{Binding Import}" />
+      </Grid>
+      <Grid IsVisible="{Binding IsSettingsPage}">
+        <views:SettingsView DataContext="{Binding Settings}" />
+      </Grid>
+    </Grid>
+  </Grid>
+</Window>

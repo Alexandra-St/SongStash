@@ -1,0 +1,29 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:SongStash.Desktop.ViewModels"
+             x:Class="SongStash.Desktop.Views.ImportingView"
+             x:DataType="vm:ImportViewModel">
+  <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="16" Padding="32">
+    <Grid RowDefinitions="Auto,*,Auto">
+      <Grid ColumnDefinitions="*,*,*,*" HorizontalAlignment="Center" Width="600">
+        <StackPanel Spacing="6" HorizontalAlignment="Center"><Border Classes="step-current"><TextBlock Text="1" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border><TextBlock Text="{Binding Strings.SelectSource}" Foreground="{DynamicResource TextSecondaryBrush}" /></StackPanel>
+        <StackPanel Grid.Column="1" Spacing="6" HorizontalAlignment="Center"><Border Classes="step-current"><TextBlock Text="2" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border><TextBlock Text="{Binding Strings.PreviewStep}" Foreground="{DynamicResource TextSecondaryBrush}" /></StackPanel>
+        <StackPanel Grid.Column="2" Spacing="6" HorizontalAlignment="Center"><Border Classes="step-current"><TextBlock Text="3" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border><TextBlock Text="{Binding Strings.ImportingStep}" Foreground="{DynamicResource AccentBrush}" /></StackPanel>
+        <StackPanel Grid.Column="3" Spacing="6" HorizontalAlignment="Center"><Border Classes="step-idle"><TextBlock Text="4" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border><TextBlock Text="{Binding Strings.ResultsStep}" Foreground="{DynamicResource TextSecondaryBrush}" /></StackPanel>
+      </Grid>
+      <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="460" Spacing="18">
+        <TextBlock Text="{Binding Strings.Importing}" FontSize="28" FontWeight="Bold" HorizontalAlignment="Center" />
+        <TextBlock Text="{Binding Strings.ImportingDetails}" Foreground="{DynamicResource TextSecondaryBrush}" TextAlignment="Center" TextWrapping="Wrap" />
+        <Border Classes="source-chip" HorizontalAlignment="Center">
+          <TextBlock Text="{Binding SelectedCountLabel}" FontWeight="SemiBold" />
+        </Border>
+        <ProgressBar IsIndeterminate="True" Height="7" />
+        <TextBlock Text="{Binding Strings.CancelDetails}" Foreground="{DynamicResource TextSecondaryBrush}" TextAlignment="Center" TextWrapping="Wrap" FontSize="12" />
+      </StackPanel>
+      <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Margin="0,20,0,0">
+        <TextBlock Text="{Binding Strings.ImportRunsLocally}" Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" />
+        <Button Grid.Column="1" Content="{Binding Strings.CancelImport}" Command="{Binding CancelCommand}" Classes="primary-action" />
+      </Grid>
+    </Grid>
+  </Border>
+</UserControl>

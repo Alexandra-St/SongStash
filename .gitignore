@@ -1,0 +1,46 @@
+# .NET build output
+[Bb]in/
+[Oo]bj/
+[Ll]ogs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# IDE
+.vs/
+.idea/
+.vscode/
+_ReSharper*/
+*.DotSettings.user
+
+# NuGet
+*.nupkg
+.nuget/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Avalonia generated artifacts
+AvaloniaResourceCache/
+
+# Test results
+TestResults/
+coverage/
+
+# Local release output
+dist/
+
+# Internal development notes
+/docs/VISUAL_ACCEPTANCE.md
+/docs/BETA_READINESS.md
+
+# Local environment
+.env
+.env.*
+!.env.example
+
+# Private design files
+Design/

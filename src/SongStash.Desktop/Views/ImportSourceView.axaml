@@ -1,0 +1,95 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:SongStash.Desktop.ViewModels"
+             xmlns:app="using:SongStash.Application.Importing"
+             x:Class="SongStash.Desktop.Views.ImportSourceView"
+             x:DataType="vm:ImportViewModel">
+  <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="16" Padding="30">
+    <Grid RowDefinitions="Auto,Auto,*,Auto">
+      <StackPanel Spacing="6">
+        <TextBlock Text="{Binding Strings.ImportTitle}" FontSize="30" FontWeight="Bold" />
+        <TextBlock Text="{Binding Strings.ImportSubtitle}" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="16" />
+      </StackPanel>
+
+      <Grid Grid.Row="1" ColumnDefinitions="*,*,*,*" Margin="0,22,0,30" HorizontalAlignment="Center" Width="600">
+        <StackPanel Spacing="6" HorizontalAlignment="Center">
+          <Border Classes="step-current"><TextBlock Text="1" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+          <TextBlock Text="{Binding Strings.SelectSource}" Foreground="{DynamicResource AccentBrush}" />
+        </StackPanel>
+        <StackPanel Grid.Column="1" Spacing="6" HorizontalAlignment="Center">
+          <Border Classes="step-idle"><TextBlock Text="2" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+          <TextBlock Text="{Binding Strings.PreviewStep}" Foreground="{DynamicResource TextSecondaryBrush}" />
+        </StackPanel>
+        <StackPanel Grid.Column="2" Spacing="6" HorizontalAlignment="Center">
+          <Border Classes="step-idle"><TextBlock Text="3" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+          <TextBlock Text="{Binding Strings.ImportStep}" Foreground="{DynamicResource TextSecondaryBrush}" />
+        </StackPanel>
+        <StackPanel Grid.Column="3" Spacing="6" HorizontalAlignment="Center">
+          <Border Classes="step-idle"><TextBlock Text="4" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+          <TextBlock Text="{Binding Strings.ResultsStep}" Foreground="{DynamicResource TextSecondaryBrush}" />
+        </StackPanel>
+      </Grid>
+
+      <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="16" VerticalAlignment="Center">
+        <Border BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1" CornerRadius="16" Padding="22" Background="{DynamicResource SelectionBrush}">
+          <Grid ColumnDefinitions="76,*" RowDefinitions="Auto,Auto,Auto,Auto">
+            <Border Width="64" Height="64" CornerRadius="32" Background="{DynamicResource SurfaceBrush}" VerticalAlignment="Center">
+              <TextBlock Text="◉" FontSize="34" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+            <StackPanel Grid.Column="1" Spacing="8" VerticalAlignment="Center">
+              <TextBlock Text="{Binding Strings.ShazamSourceTitle}" FontSize="21" FontWeight="Bold" />
+              <Border Classes="status-pill new" HorizontalAlignment="Left">
+                <TextBlock Classes="status-text" Text="{Binding Strings.AvailableSource}" />
+              </Border>
+            </StackPanel>
+            <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding Strings.ShazamSourceDescription}" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,14,0,0" TextWrapping="Wrap" />
+            <StackPanel Grid.Row="2" Grid.ColumnSpan="2" IsVisible="{Binding IsLoadingShazam}" Margin="0,14,0,0" Spacing="8">
+              <TextBlock Text="{Binding Strings.ReadingHistory}" />
+              <ProgressBar IsIndeterminate="True" Height="5" />
+            </StackPanel>
+            <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Margin="0,14,0,0" Spacing="8">
+              <Border Classes="notice-error" IsVisible="{Binding IsUnavailableShazam}"><TextBlock Text="{Binding Strings.SourceUnavailable}" TextWrapping="Wrap" /></Border>
+              <Border Classes="notice-error" IsVisible="{Binding IsUnavailableFile}"><TextBlock Text="{Binding Strings.FileUnavailable}" TextWrapping="Wrap" /></Border>
+              <Border Classes="notice-warning" IsVisible="{Binding IsUnsupportedShazam}"><TextBlock Text="{Binding Strings.UnsupportedSchema}" TextWrapping="Wrap" /></Border>
+              <Border Classes="notice-warning" IsVisible="{Binding IsUnsupportedFile}"><TextBlock Text="{Binding Strings.UnsupportedFile}" TextWrapping="Wrap" /></Border>
+              <Border Classes="notice-error" IsVisible="{Binding IsShazamReadError}"><TextBlock Text="{Binding ErrorMessage}" TextWrapping="Wrap" /></Border>
+              <Border Classes="notice-neutral" IsVisible="{Binding IsCancelledShazam}"><TextBlock Text="{Binding Strings.Cancelled}" TextWrapping="Wrap" /></Border>
+              <ItemsControl ItemsSource="{Binding DiagnosticRows}" IsVisible="{Binding ShowShazamDiagnostics}">
+                <ItemsControl.ItemTemplate><DataTemplate x:DataType="vm:ImportDiagnosticRowViewModel"><TextBlock Text="{Binding Message}" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" Margin="2,3" /></DataTemplate></ItemsControl.ItemTemplate>
+              </ItemsControl>
+              <Button Content="{Binding Strings.ReadHistory}" Command="{Binding ReadPreviewCommand}" IsEnabled="{Binding IsBusy, Converter={x:Static BoolConverters.Not}}" Classes="primary-action" HorizontalAlignment="Left" />
+              <Button Content="{Binding Strings.CancelReading}" Command="{Binding CancelCommand}" IsVisible="{Binding IsLoadingShazam}" HorizontalAlignment="Left" />
+            </StackPanel>
+          </Grid>
+        </Border>
+
+        <Border Grid.Column="1" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="16" Padding="22" Background="{DynamicResource SurfaceBrush}">
+          <StackPanel Spacing="12" VerticalAlignment="Center">
+            <TextBlock Text="{Binding Strings.FileSourceTitle}" FontSize="21" FontWeight="Bold" />
+            <TextBlock Text="{Binding Strings.FileSourceDescription}" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" />
+            <TextBlock Text="{Binding Strings.FileCardHint}" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="13" TextWrapping="Wrap" />
+            <TextBlock Text="{Binding SelectedFileName}" IsVisible="{Binding HasSelectedFileName}" TextTrimming="CharacterEllipsis" />
+            <StackPanel IsVisible="{Binding IsLoadingFile}" Spacing="8">
+              <TextBlock Text="{Binding Strings.ReadingFile}" FontWeight="SemiBold" />
+              <ProgressBar IsIndeterminate="True" Height="5" />
+            </StackPanel>
+            <Border Classes="notice-error" IsVisible="{Binding IsUnavailableFile}"><TextBlock Text="{Binding Strings.FileUnavailable}" TextWrapping="Wrap" /></Border>
+            <Border Classes="notice-warning" IsVisible="{Binding IsUnsupportedFile}"><TextBlock Text="{Binding Strings.UnsupportedFile}" TextWrapping="Wrap" /></Border>
+            <Border Classes="notice-error" IsVisible="{Binding IsFileReadError}"><TextBlock Text="{Binding ErrorMessage}" TextWrapping="Wrap" /></Border>
+            <Border Classes="notice-neutral" IsVisible="{Binding IsCancelledFile}"><TextBlock Text="{Binding Strings.Cancelled}" TextWrapping="Wrap" /></Border>
+            <ItemsControl ItemsSource="{Binding DiagnosticRows}" IsVisible="{Binding ShowFileDiagnostics}">
+              <ItemsControl.ItemTemplate><DataTemplate x:DataType="vm:ImportDiagnosticRowViewModel"><TextBlock Text="{Binding Message}" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" Margin="2,3" /></DataTemplate></ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Button Content="{Binding Strings.ChooseFile}" Click="ChooseFile_Click" Classes="primary-action" HorizontalAlignment="Left" IsEnabled="{Binding IsBusy, Converter={x:Static BoolConverters.Not}}" />
+            <Button Content="{Binding Strings.CancelReading}" Command="{Binding CancelCommand}" IsVisible="{Binding IsLoadingFile}" HorizontalAlignment="Left" />
+          </StackPanel>
+        </Border>
+      </Grid>
+
+      <Grid Grid.Row="3" ColumnDefinitions="*,Auto" Margin="0,26,0,0">
+        <TextBlock Text="{Binding Strings.OnlySongMetadata}" Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" TextWrapping="Wrap" />
+        <TextBlock Grid.Column="1" Text="{Binding Strings.ChooseOneSource}" Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" />
+      </Grid>
+    </Grid>
+  </Border>
+</UserControl>
