@@ -5,7 +5,7 @@ SongStash is a local-first macOS archive for music you've discovered. Shazam ide
 **Current release:** 0.1.0-beta.1  
 **Platform:** macOS, Apple Silicon
 
-<!-- Add one screenshot of the running app here when a verified runtime capture is available. -->
+![SongStash library in Sage theme](docs/images/songstash-library-sage.png)
 
 ## Why SongStash?
 
@@ -19,6 +19,12 @@ Shazam is great at identifying tracks, but its history is not designed as a long
 - Open songs with a preferred music service.
 - Export CSV or JSON and create local backups.
 - Use the interface in English or Russian, with four themes and Follow System.
+
+## Themes
+
+SongStash includes multiple visual themes and optional sidebar companions.
+
+![SongStash library in Midnight theme](docs/images/songstash-library-midnight.png)
 
 ## Architecture
 
