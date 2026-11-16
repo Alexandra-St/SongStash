@@ -86,8 +86,10 @@ dotnet publish "$PROJECT_FILE" \
   --runtime osx-arm64 \
   --self-contained true \
   --output "$PUBLISH_DIR" \
+  -p:PublishSingleFile=true \
   -p:PublishTrimmed=false \
   -p:PublishAot=false \
+  -p:IncludeNativeLibrariesForSelfExtract=true \
   -p:UseAppHost=true
 
 mkdir -p "$ICONSET_DIR"
@@ -105,7 +107,12 @@ iconutil --convert icns --output "$WORK_DIR/SongStash.icns" "$ICONSET_DIR"
 
 rm -rf "$APP_PATH"
 mkdir -p "$APP_MACOS" "$APP_RESOURCES"
-ditto "$PUBLISH_DIR" "$APP_MACOS"
+[[ -x "$PUBLISH_DIR/SongStash.Desktop" ]] || { echo "Single-file executable missing: $PUBLISH_DIR/SongStash.Desktop" >&2; exit 1; }
+if find "$PUBLISH_DIR" -maxdepth 1 -type f -name '*.dll' -print -quit | grep -q .; then
+  echo "Managed DLLs remain outside the single-file executable." >&2
+  exit 1
+fi
+cp "$PUBLISH_DIR/SongStash.Desktop" "$APP_MACOS/SongStash.Desktop"
 cp "$WORK_DIR/SongStash.icns" "$APP_RESOURCES/SongStash.icns"
 chmod +x "$APP_MACOS/SongStash.Desktop"
 
@@ -149,6 +156,8 @@ for value in "$ACTUAL_SHORT_VERSION" "$ACTUAL_BUILD_VERSION"; do
 done
 [[ "$ACTUAL_SHORT_VERSION" == "$APP_SHORT_VERSION" ]] || { echo "Unexpected CFBundleShortVersionString: $ACTUAL_SHORT_VERSION" >&2; exit 1; }
 [[ "$ACTUAL_BUILD_VERSION" == "$APP_BUILD_VERSION" ]] || { echo "Unexpected CFBundleVersion: $ACTUAL_BUILD_VERSION" >&2; exit 1; }
-codesign --force --deep --sign - "$APP_PATH"
+codesign --force --sign - "$APP_MACOS/SongStash.Desktop"
+codesign --force --sign - "$APP_PATH"
+codesign --verify --strict "$APP_MACOS/SongStash.Desktop"
 codesign --verify --deep --strict "$APP_PATH"
 echo "Built local Apple Silicon app: $APP_PATH"

@@ -11,7 +11,7 @@ EXECUTABLE="SongStash.Desktop"
 ICON="SongStash.icns"
 TESTER_README="$ROOT_DIR/docs/beta/README-beta.txt"
 
-for tool in dotnet plutil codesign ditto; do
+for tool in dotnet plutil codesign ditto zip unzip find grep sort basename; do
   command -v "$tool" >/dev/null || { echo "Missing required tool: $tool" >&2; exit 1; }
 done
 
@@ -40,6 +40,8 @@ validate_app() {
   [[ "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIconFile' "$plist")" == "$ICON" ]]
   [[ -x "$app/Contents/MacOS/$EXECUTABLE" ]]
   [[ -f "$app/Contents/Resources/$ICON" ]]
+  [[ "$(lipo -archs "$app/Contents/MacOS/$EXECUTABLE")" == "arm64" ]]
+  codesign --verify --strict "$app/Contents/MacOS/$EXECUTABLE"
   codesign --verify --deep --strict "$app"
 }
 
@@ -57,11 +59,23 @@ done
 for item in SongStash.app README.txt LICENSE LICENSING.md ASSETS_LICENSE.md THIRD_PARTY_NOTICES.md; do
   [[ -e "$PACKAGE_DIR/$item" ]] || { echo "$item missing from package staging directory." >&2; exit 1; }
 done
-(cd "$PACKAGE_DIR" && ditto -c -k --sequesterRsrc --keepParent SongStash.app "$ZIP_PATH")
-(cd "$PACKAGE_DIR" && zip -q "$ZIP_PATH" README.txt LICENSE LICENSING.md ASSETS_LICENSE.md THIRD_PARTY_NOTICES.md)
+(cd "$PACKAGE_DIR" && zip -qry -y "$ZIP_PATH" SongStash.app README.txt LICENSE LICENSING.md ASSETS_LICENSE.md THIRD_PARTY_NOTICES.md)
 unzip -t "$ZIP_PATH"
-unzip -l "$ZIP_PATH"
+if unzip -Z1 "$ZIP_PATH" | grep -Eq '(^|/)__MACOSX(/|$)|(^|/)\._[^/]*(/|$)|(^|/)\.DS_Store$'; then
+  echo "ZIP contains forbidden macOS metadata entries." >&2
+  exit 1
+fi
 ditto -x -k "$ZIP_PATH" "$VERIFY_DIR"
+EXPECTED_ROOT="$(printf '%s\n' ASSETS_LICENSE.md LICENSE LICENSING.md README.txt SongStash.app THIRD_PARTY_NOTICES.md | sort)"
+ACTUAL_ROOT="$(find "$VERIFY_DIR" -mindepth 1 -maxdepth 1 -exec basename {} \; | sort)"
+if [[ "$ACTUAL_ROOT" != "$EXPECTED_ROOT" ]]; then
+  printf 'Unexpected ZIP top-level contents:\n%s\n' "$ACTUAL_ROOT" >&2
+  exit 1
+fi
+if find "$VERIFY_DIR" \( -name '__MACOSX' -o -name '._*' -o -name '.DS_Store' \) -print -quit | grep -q .; then
+  echo "Extracted ZIP contains forbidden macOS metadata." >&2
+  exit 1
+fi
 [[ -d "$VERIFY_DIR/SongStash.app" ]] || { echo "SongStash.app missing from ZIP root." >&2; exit 1; }
 [[ -s "$VERIFY_DIR/README.txt" ]] || { echo "README.txt missing or empty from ZIP." >&2; exit 1; }
 cmp -s "$TESTER_README" "$VERIFY_DIR/README.txt" || { echo "README.txt content does not match source." >&2; exit 1; }
