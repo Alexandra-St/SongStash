@@ -52,7 +52,7 @@ SongStash source code is source available under separate licensing terms. Visual
 
 8. If something breaks
 
-Please send feedback through the channel where you received this beta. Include
+Please report bugs or unexpected behavior through the SongStash GitHub issue tracker. Include
 what you were trying to do, what happened instead, whether it happens again,
 and a screenshot if useful. Please also include your macOS version, Mac model
 and chip, and approximate number of Shazam history items for Shazam import

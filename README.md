@@ -61,7 +61,7 @@ The solution includes unit and integration tests for the domain, import pipeline
 
 ## Beta status
 
-SongStash is currently in closed beta for Apple Silicon Macs. The current focus is beta feedback and compatibility testing across different Macs.
+SongStash is currently in public beta for Apple Silicon Macs. The current focus is beta feedback and compatibility testing across different Macs.
 
 ## Licensing
 
